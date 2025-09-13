@@ -177,7 +177,7 @@ export async function POST(request: NextRequest) {
       fromCache = false;
       // Call OpenAI API
       const completion = await openai.chat.completions.create({
-        model: "gpt-3.5-turbo",
+        model: "gpt-4o-mini",
         messages: [
           {
             role: "system",
@@ -197,8 +197,7 @@ Hãy tóm tắt nội dung sau:`
             content: contentToSummarize
           }
         ],
-        max_tokens: 500,
-        temperature: 0.3,
+        max_completion_tokens: 500,
       });
 
       summary = completion.choices[0]?.message?.content;

@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
 
     // Call OpenAI API for title generation
     const completion = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
+      model: "gpt-5-nano",
       messages: [
         {
           role: "system",
@@ -59,8 +59,7 @@ export async function POST(request: NextRequest) {
           content: text
         }
       ],
-      max_tokens: 500,
-      temperature: 0.7,
+      max_completion_tokens: 500,
     });
 
     const titles = completion.choices[0]?.message?.content?.trim();

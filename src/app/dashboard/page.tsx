@@ -590,46 +590,47 @@ export default function Dashboard() {
 
         {/* Main Content */}
         <div className="min-w-0">
-          <div className="container mx-auto px-4 py-8">
+          <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8">
             {/* Mobile Sidebar Toggle Button */}
-            <div className="lg:hidden mb-4">
+            <div className="lg:hidden mb-3 sm:mb-4">
               <Button
                 variant="outline"
                 onClick={() => setMobileSidebarOpen(true)}
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 text-sm"
+                size="sm"
               >
                 <Menu className="w-4 h-4" />
                 Menu
               </Button>
             </div>
 
-            <div className="grid lg:grid-cols-1 gap-8">
+            <div className="grid grid-cols-1 gap-4 sm:gap-8">
               {/* Main Content - Full width since sidebar is separate */}
               <div>
                 {/* Quota Bar */}
             {usageInfo && (
-              <Card className="mb-6">
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between mb-2">
+              <Card className="mb-4 sm:mb-6">
+                <CardContent className="p-3 sm:p-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-2 space-y-1 sm:space-y-0">
                     <div className="flex items-center space-x-2">
-                      <BarChart3 className="h-4 w-4 text-blue-600" />
-                      <span className="text-sm font-medium">
+                      <BarChart3 className="h-3 w-3 sm:h-4 sm:w-4 text-blue-600" />
+                      <span className="text-xs sm:text-sm font-medium">
                         {!user ? 'Lượt dùng thử miễn phí' : 'Lượt sử dụng hôm nay'}
                       </span>
                     </div>
-                    <span className="text-sm text-gray-600">
+                    <span className="text-xs sm:text-sm text-gray-600">
                       {(usageInfo.dailyLimit || 5) - usageInfo.remainingUses}/{usageInfo.dailyLimit || 5}
                     </span>
                   </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
+                  <div className="w-full bg-gray-200 rounded-full h-1.5 sm:h-2">
                     <div 
-                      className={`h-2 rounded-full ${!user ? 'bg-orange-500' : 'bg-blue-600'}`}
+                      className={`h-1.5 sm:h-2 rounded-full ${!user ? 'bg-orange-500' : 'bg-blue-600'}`}
                       style={{ 
                         width: `${(((usageInfo.dailyLimit || 5) - usageInfo.remainingUses) / (usageInfo.dailyLimit || 5)) * 100}%` 
                       }}
                     ></div>
                   </div>
-                  <div className="mt-2 flex items-center justify-between">
+                  <div className="mt-1 sm:mt-2 flex flex-col sm:flex-row sm:items-center justify-between space-y-1 sm:space-y-0">
                     <div className="text-xs text-gray-500">
                       Gói: <span className="capitalize font-medium">
                         {usageInfo.isGuest ? 'Dùng thử' : usageInfo.subscription}
@@ -754,53 +755,53 @@ export default function Dashboard() {
 
             {/* Service Tabs */}
             <Card>
-              <CardHeader>
-                <CardTitle className="text-xl text-gray-900">Chọn dịch vụ AI</CardTitle>
+              <CardHeader className="pb-3 sm:pb-4">
+                <CardTitle className="text-lg sm:text-xl text-gray-900">Chọn dịch vụ AI</CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-3 sm:p-6">
                 <Tabs value={activeTab} onValueChange={setActiveTab}>
-                  <TabsList className="grid w-full grid-cols-5">
-                    <TabsTrigger value="summary" className="flex items-center space-x-2">
-                      <FileText className="h-4 w-4" />
-                      <span className="hidden sm:inline">Tóm tắt</span>
+                  <TabsList className="grid w-full grid-cols-5 text-xs sm:text-sm">
+                    <TabsTrigger value="summary" className="flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3">
+                      <FileText className="h-3 w-3 sm:h-4 sm:w-4" />
+                      <span className="hidden xs:inline sm:inline">Tóm tắt</span>
                     </TabsTrigger>
-                    <TabsTrigger value="translate" className="flex items-center space-x-2">
-                      <Languages className="h-4 w-4" />
-                      <span className="hidden sm:inline">Dịch</span>
+                    <TabsTrigger value="translate" className="flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3">
+                      <Languages className="h-3 w-3 sm:h-4 sm:w-4" />
+                      <span className="hidden xs:inline sm:inline">Dịch</span>
                     </TabsTrigger>
-                    <TabsTrigger value="keypoints" className="flex items-center space-x-2">
-                      <ListChecks className="h-4 w-4" />
-                      <span className="hidden sm:inline">Keypoints</span>
+                    <TabsTrigger value="keypoints" className="flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3">
+                      <ListChecks className="h-3 w-3 sm:h-4 sm:w-4" />
+                      <span className="hidden xs:inline sm:inline">Key</span>
                     </TabsTrigger>
-                    <TabsTrigger value="title" className="flex items-center space-x-2">
-                      <Type className="h-4 w-4" />
-                      <span className="hidden sm:inline">Tiêu đề</span>
+                    <TabsTrigger value="title" className="flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3">
+                      <Type className="h-3 w-3 sm:h-4 sm:w-4" />
+                      <span className="hidden xs:inline sm:inline">Tiêu đề</span>
                     </TabsTrigger>
-                    <TabsTrigger value="simplify" className="flex items-center space-x-2">
-                      <Lightbulb className="h-4 w-4" />
-                      <span className="hidden sm:inline">Đơn giản</span>
+                    <TabsTrigger value="simplify" className="flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3">
+                      <Lightbulb className="h-3 w-3 sm:h-4 sm:w-4" />
+                      <span className="hidden xs:inline sm:inline">Đơn giản</span>
                     </TabsTrigger>
                   </TabsList>
 
                   {/* Summary Tab */}
-                  <TabsContent value="summary" className="space-y-4">
+                  <TabsContent value="summary" className="space-y-3 sm:space-y-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">
                         Văn bản cần tóm tắt
                       </label>
                       <Textarea
                         placeholder="Nhập hoặc dán văn bản cần tóm tắt..."
                         value={summaryText}
                         onChange={(e) => setSummaryText(e.target.value)}
-                        className="min-h-[150px]"
+                        className="min-h-[120px] sm:min-h-[150px] text-sm sm:text-base"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">
                         Chế độ tóm tắt
                       </label>
                       <Select value={summaryMode} onValueChange={setSummaryMode}>
-                        <SelectTrigger>
+                        <SelectTrigger className="text-sm sm:text-base">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -813,9 +814,9 @@ export default function Dashboard() {
                     <Button 
                       onClick={handleSummary}
                       disabled={loading || !summaryText.trim()}
-                      className="w-full bg-blue-600 hover:bg-blue-700"
+                      className="w-full bg-blue-600 hover:bg-blue-700 py-2 sm:py-3 text-sm sm:text-base"
                     >
-                      {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <FileText className="mr-2 h-4 w-4" />}
+                      {loading ? <Loader2 className="mr-2 h-3 w-3 sm:h-4 sm:w-4 animate-spin" /> : <FileText className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />}
                       Tóm tắt ngay
                     </Button>
                   </TabsContent>
@@ -944,29 +945,32 @@ export default function Dashboard() {
 
                 {/* Results */}
                 {result && (
-                  <Card className="mt-6">
-                    <CardHeader>
-                      <CardTitle className="text-lg text-gray-900 flex items-center justify-between">
-                        Kết quả
-                        <div className="flex space-x-2">
+                  <Card className="mt-4 sm:mt-6">
+                    <CardHeader className="pb-3 sm:pb-4">
+                      <CardTitle className="text-base sm:text-lg text-gray-900 flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-2 sm:space-y-0">
+                        <span>Kết quả</span>
+                        <div className="flex flex-wrap gap-2">
                           <Button
                             variant="outline"
                             size="sm"
                             onClick={() => copyToClipboard(result)}
+                            className="text-xs sm:text-sm"
                           >
-                            <Copy className="h-4 w-4 mr-1" />
-                            Copy
+                            <Copy className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+                            <span className="hidden sm:inline">Copy</span>
+                            <span className="sm:hidden">Sao chép</span>
                           </Button>
-                          <Button variant="outline" size="sm">
-                            <Share2 className="h-4 w-4 mr-1" />
-                            Chia sẻ
+                          <Button variant="outline" size="sm" className="text-xs sm:text-sm">
+                            <Share2 className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+                            <span className="hidden sm:inline">Chia sẻ</span>
+                            <span className="sm:hidden">Chia sẻ</span>
                           </Button>
                         </div>
                       </CardTitle>
                     </CardHeader>
-                    <CardContent>
-                      <div className="bg-gray-50 p-4 rounded-lg">
-                        <pre className="whitespace-pre-wrap text-sm text-gray-700 font-sans">
+                    <CardContent className="pt-0">
+                      <div className="bg-gray-50 p-3 sm:p-4 rounded-lg">
+                        <pre className="whitespace-pre-wrap text-xs sm:text-sm text-gray-700 font-sans leading-relaxed break-words overflow-hidden">
                           {result}
                         </pre>
                       </div>

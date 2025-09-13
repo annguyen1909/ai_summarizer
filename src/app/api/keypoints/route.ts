@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
 
     // Call OpenAI API for keypoints extraction
     const completion = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
+      model: "gpt-5-nano",
       messages: [
         {
           role: "system",
@@ -55,8 +55,7 @@ export async function POST(request: NextRequest) {
           content: text
         }
       ],
-      max_tokens: 1000,
-      temperature: 0.3,
+      max_completion_tokens: 1000,
     });
 
     const keypoints = completion.choices[0]?.message?.content?.trim();

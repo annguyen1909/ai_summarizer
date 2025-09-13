@@ -575,105 +575,110 @@ export default function Home() {
 
       {/* Interactive Demo Section - Only for non-logged-in users */}
       <SignedOut>
-        <section id="demo-section" className="container mx-auto px-6 py-24 bg-gradient-to-br from-indigo-50 to-blue-50">
+        <section id="demo-section" className="container mx-auto px-4 sm:px-6 py-12 sm:py-24 bg-gradient-to-br from-indigo-50 to-blue-50">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-4xl font-bold text-gray-900 mb-8 text-center">
+          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-6 sm:mb-8 text-center">
             Dùng thử ngay - Không cần đăng ký
           </h2>
-          <p className="text-center text-gray-600 mb-12 text-xl">
+          <p className="text-center text-gray-600 mb-8 sm:mb-12 text-lg sm:text-xl">
             Bạn có <span className="font-bold text-blue-600">{Math.max(0, 3 - getGuestUsage().count)}</span> lượt dùng thử miễn phí hôm nay
           </p>
           
-          <div className="grid lg:grid-cols-2 gap-12">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-12">
             {/* Input Demo */}
-            <Card className="shadow-2xl border-0 rounded-3xl bg-white">
-              <CardHeader className="pb-6">
-                <CardTitle className="text-blue-600 flex items-center text-2xl">
-                  <FileText className="h-6 w-6 mr-3" />
+            <Card className="shadow-xl sm:shadow-2xl border-0 rounded-2xl sm:rounded-3xl bg-white">
+              <CardHeader className="pb-4 sm:pb-6">
+                <CardTitle className="text-blue-600 flex items-center text-xl sm:text-2xl">
+                  <FileText className="h-5 w-5 sm:h-6 sm:w-6 mr-2 sm:mr-3" />
                   Nhập văn bản để tóm tắt
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-6 px-8 pb-8">
+              <CardContent className="space-y-4 sm:space-y-6 px-4 sm:px-8 pb-6 sm:pb-8">
                 <Textarea
                   placeholder="Dán văn bản dài ở đây để AI tóm tắt ngay lập tức..."
                   value={demoText}
                   onChange={(e) => setDemoText(e.target.value)}
-                  className="min-h-[250px] resize-none text-lg rounded-2xl border-2 focus:border-blue-400 focus:ring-0"
+                  className="min-h-[200px] sm:min-h-[250px] resize-none text-base sm:text-lg rounded-xl sm:rounded-2xl border-2 focus:border-blue-400 focus:ring-0"
                 />
-                <div className="flex space-x-4">
+                <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4">
                   <Button
                     onClick={handleDemoSummary}
                     disabled={demoLoading || !demoText.trim()}
-                    className="bg-blue-600 hover:bg-blue-700 flex-1 py-4 text-lg rounded-2xl shadow-lg"
+                    className="bg-blue-600 hover:bg-blue-700 flex-1 py-3 sm:py-4 text-base sm:text-lg rounded-xl sm:rounded-2xl shadow-lg"
                   >
                     {demoLoading ? (
                       <>
-                        <Loader2 className="mr-3 h-5 w-5 animate-spin" />
-                        Đang tóm tắt...
+                        <Loader2 className="mr-2 sm:mr-3 h-4 w-4 sm:h-5 sm:w-5 animate-spin" />
+                        <span className="hidden sm:inline">Đang tóm tắt...</span>
+                        <span className="sm:hidden">Đang xử lý...</span>
                       </>
                     ) : (
                       <>
-                        <FileText className="mr-3 h-5 w-5" />
+                        <FileText className="mr-2 sm:mr-3 h-4 w-4 sm:h-5 sm:w-5" />
                         Tóm tắt ngay
                       </>
                     )}
                   </Button>
                   <Button
                     variant="outline"
-                    className="rounded-2xl px-6 py-4 border-2"
+                    className="rounded-xl sm:rounded-2xl px-4 sm:px-6 py-3 sm:py-4 border-2 text-sm sm:text-base"
                     onClick={() => setDemoText("Trí tuệ nhân tạo (AI) đang thay đổi cách chúng ta làm việc và học tập. Với khả năng xử lý dữ liệu lớn và nhận dạng mẫu, AI giúp tự động hóa nhiều tác vụ phức tạp. Trong giáo dục, AI hỗ trợ học sinh cá nhân hóa quá trình học, tạo ra những bài giảng phù hợp với từng người. Trong kinh doanh, AI tối ưu hóa quy trình, dự đoán xu hướng thị trường và cải thiện trải nghiệm khách hàng. Tuy nhiên, việc ứng dụng AI cũng đặt ra những thách thức về đạo đức và bảo mật dữ liệu mà chúng ta cần giải quyết.")}
                   >
-                    Văn bản mẫu
+                    <span className="hidden sm:inline">Văn bản mẫu</span>
+                    <span className="sm:hidden">Mẫu</span>
                   </Button>
                 </div>
-                <div className="text-sm text-gray-500 bg-blue-50 p-4 rounded-2xl">
-                  💡 <strong>Mẹo:</strong> Dán bài báo, tài liệu học tập, hoặc email dài để xem AI tóm tắt thông minh
+                <div className="text-xs sm:text-sm text-gray-500 bg-blue-50 p-3 sm:p-4 rounded-xl sm:rounded-2xl">
+                  💡 <strong>Mẹo:</strong> <span className="hidden sm:inline">Dán bài báo, tài liệu học tập, hoặc email dài để xem AI tóm tắt thông minh</span><span className="sm:hidden">Dán văn bản dài để AI tóm tắt</span>
                 </div>
               </CardContent>
             </Card>
 
             {/* Output Demo */}
-            <Card className="shadow-2xl border-0 border-l-4 border-l-blue-500 rounded-3xl bg-white">
-              <CardHeader className="pb-6">
-                <CardTitle className="text-green-600 flex items-center text-2xl">
-                  <CheckCircle className="h-6 w-6 mr-3" />
+            <Card className="shadow-xl sm:shadow-2xl border-0 border-l-2 sm:border-l-4 border-l-blue-500 rounded-2xl sm:rounded-3xl bg-white">
+              <CardHeader className="pb-4 sm:pb-6">
+                <CardTitle className="text-green-600 flex items-center text-xl sm:text-2xl">
+                  <CheckCircle className="h-5 w-5 sm:h-6 sm:w-6 mr-2 sm:mr-3" />
                   Kết quả AI {demoResult && "✨"}
                 </CardTitle>
               </CardHeader>
-              <CardContent className="px-8 pb-8">
+              <CardContent className="px-4 sm:px-8 pb-6 sm:pb-8">
                 {demoResult ? (
-                  <div className="space-y-6">
-                    <div className="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-2xl border-2 border-green-200">
-                      <h4 className="font-bold text-gray-900 mb-3 text-lg flex items-center">
+                  <div className="space-y-4 sm:space-y-6">
+                    <div className="bg-gradient-to-br from-green-50 to-green-100 p-4 sm:p-6 rounded-xl sm:rounded-2xl border-2 border-green-200">
+                      <h4 className="font-bold text-gray-900 mb-2 sm:mb-3 text-base sm:text-lg flex items-center">
                         📄 Tóm tắt:
                       </h4>
-                      <p className="text-gray-700 leading-relaxed text-lg">
+                      <p className="text-gray-700 leading-relaxed text-sm sm:text-lg">
                         {demoResult}
                       </p>
                     </div>
-                    <div className="text-center space-y-4">
-                      <p className="text-green-600 font-bold text-lg">
-                        🎉 Hoàn thành! Còn <span className="text-2xl">{Math.max(0, 3 - getGuestUsage().count)}</span> lượt dùng thử
+                    <div className="text-center space-y-3 sm:space-y-4">
+                      <p className="text-green-600 font-bold text-base sm:text-lg">
+                        🎉 Hoàn thành! Còn <span className="text-xl sm:text-2xl">{Math.max(0, 3 - getGuestUsage().count)}</span> lượt dùng thử
                       </p>
-                      <div className="flex space-x-4">
+                      <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4">
                         <Link href="/dashboard" className="flex-1">
-                          <Button size="lg" className="w-full bg-blue-600 hover:bg-blue-700 py-4 rounded-2xl text-lg shadow-lg">
-                            Trải nghiệm đầy đủ
+                          <Button size="lg" className="w-full bg-blue-600 hover:bg-blue-700 py-3 sm:py-4 rounded-xl sm:rounded-2xl text-base sm:text-lg shadow-lg">
+                            <span className="hidden sm:inline">Trải nghiệm đầy đủ</span>
+                            <span className="sm:hidden">Trải nghiệm</span>
                           </Button>
                         </Link>
                         <SignUpButton mode="modal">
-                          <Button size="lg" variant="outline" className="flex-1 py-4 rounded-2xl text-lg border-2">
-                            Đăng ký +2 lượt
+                          <Button size="lg" variant="outline" className="flex-1 py-3 sm:py-4 rounded-xl sm:rounded-2xl text-base sm:text-lg border-2">
+                            <span className="hidden sm:inline">Đăng ký +2 lượt</span>
+                            <span className="sm:hidden">Đăng ký</span>
                           </Button>
                         </SignUpButton>
                       </div>
                     </div>
                   </div>
                 ) : (
-                  <div className="text-center py-16">
-                    <div className="text-8xl mb-6">🤖</div>
-                    <p className="text-gray-500 text-xl leading-relaxed">
-                      Nhập văn bản bên trái và nhấn <br/><strong>&ldquo;Tóm tắt ngay&rdquo;</strong> để xem kết quả
+                  <div className="text-center py-12 sm:py-16">
+                    <div className="text-6xl sm:text-8xl mb-4 sm:mb-6">🤖</div>
+                    <p className="text-gray-500 text-lg sm:text-xl leading-relaxed">
+                      <span className="hidden sm:inline">Nhập văn bản bên trái và nhấn <br/><strong>&ldquo;Tóm tắt ngay&rdquo;</strong> để xem kết quả</span>
+                      <span className="sm:hidden">Nhập văn bản và nhấn <br/><strong>&ldquo;Tóm tắt ngay&rdquo;</strong></span>
                     </p>
                   </div>
                 )}

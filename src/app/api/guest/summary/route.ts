@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
     const prompt = promptMap[summaryMode as keyof typeof promptMap] || promptMap.brief;
 
     const completion = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
+      model: "gpt-5-nano",
       messages: [
         {
           role: "system",
@@ -40,8 +40,7 @@ export async function POST(req: NextRequest) {
           content: `${prompt}\n\n${text}`
         }
       ],
-      max_tokens: 1000,
-      temperature: 0.3,
+      max_completion_tokens: 1000,
     });
 
     const summary = completion.choices[0]?.message?.content;

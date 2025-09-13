@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
     const prompt = directions[direction as keyof typeof directions] || directions['vi-en'];
 
     const completion = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
+      model: "gpt-5-nano",
       messages: [
         {
           role: "system",
@@ -45,8 +45,7 @@ export async function POST(req: NextRequest) {
           content: `${prompt}\n\n${text}`
         }
       ],
-      max_tokens: 1500,
-      temperature: 0.1,
+      max_completion_tokens: 2000,
     });
 
     const translatedText = completion.choices[0]?.message?.content;

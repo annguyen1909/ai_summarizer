@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
     }
 
     const completion = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
+      model: "gpt-5-nano",
       messages: [
         {
           role: "system",
@@ -32,8 +32,7 @@ export async function POST(req: NextRequest) {
           content: `Tạo ${count} tiêu đề hấp dẫn và phù hợp cho văn bản sau (mỗi tiêu đề trên một dòng, không đánh số):\n\n${text}`
         }
       ],
-      max_tokens: 500,
-      temperature: 0.7,
+      max_completion_tokens: 500,
     });
 
     const response = completion.choices[0]?.message?.content;
