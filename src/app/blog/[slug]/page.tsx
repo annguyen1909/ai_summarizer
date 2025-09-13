@@ -3,6 +3,8 @@
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { CalendarDays, Clock, ArrowLeft, Share2 } from "lucide-react";
@@ -293,10 +295,21 @@ export default function BlogPostPage() {
           </div>
 
           {/* Content */}
-          <div className="prose prose-lg prose-gray max-w-none">
-            <div className="whitespace-pre-line leading-relaxed text-gray-700">
+          <div className="prose prose-lg prose-gray max-w-none leading-relaxed text-gray-700">
+            <ReactMarkdown 
+              remarkPlugins={[remarkGfm]}
+              components={{
+                h1: ({children}) => <h1 className="text-3xl font-bold text-gray-900 mt-8 mb-4">{children}</h1>,
+                h2: ({children}) => <h2 className="text-2xl font-bold text-gray-900 mt-6 mb-3">{children}</h2>,
+                h3: ({children}) => <h3 className="text-xl font-semibold text-gray-900 mt-4 mb-2">{children}</h3>,
+                p: ({children}) => <p className="mb-4 leading-relaxed">{children}</p>,
+                ul: ({children}) => <ul className="list-disc list-inside mb-4 space-y-1">{children}</ul>,
+                ol: ({children}) => <ol className="list-decimal list-inside mb-4 space-y-1">{children}</ol>,
+                li: ({children}) => <li className="text-gray-700">{children}</li>
+              }}
+            >
               {post.content}
-            </div>
+            </ReactMarkdown>
           </div>
 
           {/* CTA */}
@@ -317,9 +330,6 @@ export default function BlogPostPage() {
           </Card>
         </div>
       </article>
-
-      {/* Footer */}
-      <Footer variant="light" />
     </div>
   );
 }

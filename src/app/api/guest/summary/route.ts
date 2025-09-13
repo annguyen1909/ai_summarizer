@@ -7,7 +7,7 @@ const openai = new OpenAI({
 
 export async function POST(req: NextRequest) {
   try {
-    const { text, summaryMode = 'brief' } = await req.json();
+    const { text, summaryMode = 'short' } = await req.json();
 
     if (!text || typeof text !== 'string') {
       return NextResponse.json({ error: 'Text is required' }, { status: 400 });
@@ -20,24 +20,47 @@ export async function POST(req: NextRequest) {
       }, { status: 400 });
     }
 
-    const promptMap = {
-      brief: 'Tóm tắt ngắn gọn văn bản sau đây bằng tiếng Việt, chỉ giữ lại những ý chính nhất:',
-      detailed: 'Tóm tắt chi tiết văn bản sau đây bằng tiếng Việt, bao gồm các ý chính và các điểm quan trọng:',
-      bullet: 'Tóm tắt văn bản sau đây bằng tiếng Việt dưới dạng danh sách gạch đầu dòng, mỗi điểm là một ý chính:'
+    // Define different summary modes (same as main API)
+    const modeMap = {
+      short: `Bạn là một chuyên gia tóm tắt văn bản tiếng Việt. Hãy tóm tắt nội dung thành 2-3 câu ngắn gọn nhất có thể mà vẫn giữ được ý chính.
+
+Quy tắc:
+- Chỉ 2-3 câu tóm tắt
+- Đi thẳng vào vấn đề chính
+- Loại bỏ mọi chi tiết phụ
+- Sử dụng từ ngữ súc tích`,
+      
+      bullet: `Bạn là một chuyên gia tóm tắt văn bản tiếng Việt. Hãy tóm tắt nội dung dưới dạng danh sách gạch đầu dòng.
+
+Quy tắc:
+- Sử dụng dấu "•" cho mỗi điểm chính
+- Mỗi điểm từ 1-2 câu
+- Tạo 4-6 điểm chính
+- Sắp xếp theo thứ tự quan trọng
+- Bắt đầu mỗi điểm với động từ hoặc danh từ chính`,
+      
+      outline: `Bạn là một chuyên gia tóm tắt văn bản tiếng Việt. Hãy tạo dàn ý chi tiết với cấu trúc phân cấp.
+
+Quy tắc:
+- Sử dụng định dạng: I., II., III. cho điểm chính
+- Sử dụng A., B., C. cho điểm phụ
+- Tạo cấu trúc logic và chi tiết
+- Bao gồm cả điểm chính và điểm phụ
+- Thể hiện mối quan hệ giữa các ý`
     };
 
-    const prompt = promptMap[summaryMode as keyof typeof promptMap] || promptMap.brief;
+    const systemPrompt = modeMap[summaryMode as keyof typeof modeMap] || modeMap.short;
 
     const completion = await openai.chat.completions.create({
-      model: "gpt-5-nano",
+      model: "gpt-4.1-nano",
       messages: [
         {
           role: "system",
-          content: "Bạn là một AI trợ lý chuyên tóm tắt văn bản bằng tiếng Việt. Hãy tóm tắt chính xác và súc tích."
+          content: systemPrompt
         },
         {
           role: "user",
-          content: `${prompt}\n\n${text}`
+          content: `Tóm tắt nội dung sau:\n\n${text}`
         }
       ],
       max_completion_tokens: 1000,

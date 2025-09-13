@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
     const prompt = directions[direction as keyof typeof directions] || directions['vi-en'];
 
     const completion = await openai.chat.completions.create({
-      model: "gpt-5-nano",
+      model: "gpt-4.1-nano",
       messages: [
         {
           role: "system",

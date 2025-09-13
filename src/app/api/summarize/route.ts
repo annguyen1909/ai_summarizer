@@ -71,7 +71,7 @@ export async function POST(request: NextRequest) {
     // Get authentication from Clerk (optional for guest mode)
     const { userId } = await auth();
     
-    const { text, url, hcaptchaToken, guestMode } = await request.json();
+    const { text, url, hcaptchaToken, guestMode, summaryMode } = await request.json();
 
     if (!text && !url) {
       return NextResponse.json(
@@ -169,32 +169,56 @@ export async function POST(request: NextRequest) {
       contentToSummarize = contentToSummarize.substring(0, 10000) + '...';
     }
 
-    // Check cache first
-    let summary = await CacheService.get(contentToSummarize);
+    // Check cache first - include summaryMode in cache key
+    const cacheKey = `${contentToSummarize}_mode_${summaryMode || 'short'}`;
+    let summary = await CacheService.get(cacheKey);
     let fromCache = true;
 
     if (!summary) {
       fromCache = false;
+      
+      // Define different summary modes
+      const modeMap = {
+        short: `Bạn là một chuyên gia tóm tắt văn bản tiếng Việt. Hãy tóm tắt nội dung thành 2-3 câu ngắn gọn nhất có thể mà vẫn giữ được ý chính.
+
+Quy tắc:
+- Chỉ 2-3 câu tóm tắt
+- Đi thẳng vào vấn đề chính
+- Loại bỏ mọi chi tiết phụ
+- Sử dụng từ ngữ súc tích`,
+        
+        bullet: `Bạn là một chuyên gia tóm tắt văn bản tiếng Việt. Hãy tóm tắt nội dung dưới dạng danh sách gạch đầu dòng.
+
+Quy tắc:
+- Sử dụng dấu "•" cho mỗi điểm chính
+- Mỗi điểm từ 1-2 câu
+- Tạo 4-6 điểm chính
+- Sắp xếp theo thứ tự quan trọng
+- Bắt đầu mỗi điểm với động từ hoặc danh từ chính`,
+        
+        outline: `Bạn là một chuyên gia tóm tắt văn bản tiếng Việt. Hãy tạo dàn ý chi tiết với cấu trúc phân cấp.
+
+Quy tắc:
+- Sử dụng định dạng: I., II., III. cho điểm chính
+- Sử dụng A., B., C. cho điểm phụ
+- Tạo cấu trúc logic và chi tiết
+- Bao gồm cả điểm chính và điểm phụ
+- Thể hiện mối quan hệ giữa các ý`
+      };
+
+      const systemPrompt = modeMap[summaryMode as keyof typeof modeMap] || modeMap.short;
+      
       // Call OpenAI API
       const completion = await openai.chat.completions.create({
-        model: "gpt-4o-mini",
+        model: "gpt-4.1-nano",
         messages: [
           {
             role: "system",
-            content: `Bạn là một chuyên gia tóm tắt văn bản tiếng Việt. Nhiệm vụ của bạn là tóm tắt nội dung một cách ngắn gọn, chính xác và dễ hiểu. 
-
-Quy tắc tóm tắt:
-1. Sử dụng tiếng Việt tự nhiên và rõ ràng
-2. Tóm tắt thành 3-5 câu chính
-3. Giữ lại thông tin quan trọng nhất
-4. Loại bỏ chi tiết không cần thiết
-5. Sắp xếp thông tin theo thứ tự logic
-
-Hãy tóm tắt nội dung sau:`
+            content: systemPrompt
           },
           {
             role: "user",
-            content: contentToSummarize
+            content: `Tóm tắt nội dung sau:\n\n${contentToSummarize}`
           }
         ],
         max_completion_tokens: 500,
@@ -209,8 +233,8 @@ Hãy tóm tắt nội dung sau:`
         );
       }
 
-      // Cache the result
-      await CacheService.set(contentToSummarize, summary);
+      // Cache the result with mode-specific key
+      await CacheService.set(cacheKey, summary);
     }
 
     // Consume usage for authenticated users

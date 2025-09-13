@@ -154,6 +154,13 @@ export default function Dashboard() {
     }
   }, [user, isLoaded, loadUsageInfo, loadHistory]);
 
+  // Clear result when summary mode changes to give visual feedback
+  useEffect(() => {
+    if (activeTab === "summary" && result) {
+      setResult("");
+    }
+  }, [summaryMode, activeTab]); // eslint-disable-line react-hooks/exhaustive-deps
+
   const setupGuestProfile = () => {
     const guestUsage = getGuestUsage();
     const remainingQuota = Math.max(0, GUEST_DAILY_LIMIT - guestUsage.count);

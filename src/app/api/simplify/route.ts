@@ -72,7 +72,7 @@ export async function POST(request: NextRequest) {
 
     // Call OpenAI API for text simplification
     const completion = await openai.chat.completions.create({
-      model: "gpt-5-nano",
+      model: "gpt-4.1-nano",
       messages: [
         {
           role: "system",

@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
     const prompt = levelMap[level as keyof typeof levelMap] || levelMap.medium;
 
     const completion = await openai.chat.completions.create({
-      model: "gpt-5-nano",
+      model: "gpt-4.1-nano",
       messages: [
         {
           role: "system",
