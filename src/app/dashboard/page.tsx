@@ -1,12 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UserButton, useUser, SignInButton } from "@clerk/nextjs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -19,22 +18,13 @@ import {
   Type,
   Lightbulb,
   Copy,
-  Download,
   Share2,
   History,
   BarChart3,
-  Lock,
   Crown,
   Menu,
   X
 } from "lucide-react";
-
-interface UserProfile {
-  plan: 'guest' | 'free' | 'premium' | 'pro';
-  currentQuota: number;
-  totalQuota: number;
-  totalUsage: number;
-}
 
 interface ServiceResult {
   id: string;
@@ -46,7 +36,6 @@ interface ServiceResult {
 
 // Guest session management
 const GUEST_DAILY_LIMIT = 3;
-const FREE_DAILY_LIMIT = 5;
 const GUEST_STORAGE_KEY = 'guest_usage';
 
 function getGuestUsage() {
@@ -84,11 +73,24 @@ function updateGuestUsage() {
   localStorage.setItem(GUEST_STORAGE_KEY, JSON.stringify(newData));
 }
 
+interface UsageInfo {
+  currentUsage: number;
+  maxUsage: number;
+  resetDate: string;
+  plan: string;
+  canUse: boolean;
+  usedToday: number;
+  dailyLimit: number;
+  remainingUses: number;
+  isGuest: boolean;
+  subscription: string;
+}
+
 export default function Dashboard() {
   const { user, isLoaded } = useUser();
   const [activeTab, setActiveTab] = useState("summary");
   const [loading, setLoading] = useState(false);
-  const [usageInfo, setUsageInfo] = useState<any>(null);
+  const [usageInfo, setUsageInfo] = useState<UsageInfo | null>(null);
   const [history, setHistory] = useState<ServiceResult[]>([]);
   const [showQuotaModal, setShowQuotaModal] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -111,34 +113,7 @@ export default function Dashboard() {
   // Results
   const [result, setResult] = useState<string>("");
 
-  // Load user profile and history
-  useEffect(() => {
-    if (isLoaded) {
-      if (user) {
-        loadUsageInfo();
-        loadHistory();
-      } else {
-        // Setup guest profile
-        setupGuestProfile();
-      }
-    }
-  }, [user, isLoaded]);
-
-  const setupGuestProfile = () => {
-    const guestUsage = getGuestUsage();
-    const remainingQuota = Math.max(0, GUEST_DAILY_LIMIT - guestUsage.count);
-    
-    setUsageInfo({
-      canUse: remainingQuota > 0,
-      remainingUses: remainingQuota,
-      usedToday: guestUsage.count,
-      dailyLimit: GUEST_DAILY_LIMIT,
-      subscription: 'Free',
-      isGuest: true
-    });
-  };
-
-  const loadUsageInfo = async () => {
+  const loadUsageInfo = useCallback(async () => {
     if (user) {
       try {
         const response = await fetch('/api/user/usage');
@@ -152,9 +127,9 @@ export default function Dashboard() {
         console.error('Error loading usage info:', error);
       }
     }
-  };
+  }, [user]);
 
-  const loadHistory = async () => {
+  const loadHistory = useCallback(async () => {
     try {
       const response = await fetch('/api/summaries/history');
       if (response.ok) {
@@ -164,6 +139,37 @@ export default function Dashboard() {
     } catch (error) {
       console.error('Error loading history:', error);
     }
+  }, []);
+
+  // Load user profile and history
+  useEffect(() => {
+    if (isLoaded) {
+      if (user) {
+        loadUsageInfo();
+        loadHistory();
+      } else {
+        // Setup guest profile
+        setupGuestProfile();
+      }
+    }
+  }, [user, isLoaded, loadUsageInfo, loadHistory]);
+
+  const setupGuestProfile = () => {
+    const guestUsage = getGuestUsage();
+    const remainingQuota = Math.max(0, GUEST_DAILY_LIMIT - guestUsage.count);
+    
+    setUsageInfo({
+      currentUsage: guestUsage.count,
+      maxUsage: GUEST_DAILY_LIMIT,
+      resetDate: new Date().toISOString(),
+      plan: 'guest',
+      canUse: remainingQuota > 0,
+      remainingUses: remainingQuota,
+      usedToday: guestUsage.count,
+      dailyLimit: GUEST_DAILY_LIMIT,
+      subscription: 'Free',
+      isGuest: true
+    });
   };
 
   const checkQuotaAndProceed = (callback: () => void) => {

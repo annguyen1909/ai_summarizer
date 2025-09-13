@@ -10,6 +10,16 @@ function generateId() {
   return Math.random().toString(36).substring(2, 15);
 }
 
+interface Summary {
+  id: string;
+  title: string;
+  content: string;
+  summary: string;
+  created_at: string;
+  user_id: string;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function GET(request: NextRequest) {
   try {
     const { userId } = await auth();
@@ -23,7 +33,7 @@ export async function GET(request: NextRequest) {
     const userSummariesData = userSummaryIds
       .map((id: string) => summaries.get(id))
       .filter(Boolean)
-      .sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+      .sort((a: Summary, b: Summary) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
       .slice(0, 50); // Limit to 50 most recent
 
     return NextResponse.json({ summaries: userSummariesData });

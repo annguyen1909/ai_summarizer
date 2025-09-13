@@ -3,6 +3,7 @@ import { auth } from '@clerk/nextjs/server';
 import crypto from 'crypto';
 
 // In-memory storage
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const users = new Map();
 const paymentTransactions = new Map();
 

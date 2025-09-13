@@ -63,11 +63,11 @@ export async function POST(request: NextRequest) {
 
     // Prepare request body
     const requestBody = {
-      app_id: parseInt(appId),
+      app_id: appId,
       app_trans_id: appTransId,
       app_user: appUser,
-      app_time: appTime,
-      amount: amount,
+      app_time: appTime.toString(),
+      amount: amount.toString(),
       description: description,
       bank_code: "",
       item: item,
@@ -82,7 +82,7 @@ export async function POST(request: NextRequest) {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
-      body: new URLSearchParams(requestBody as any),
+      body: new URLSearchParams(requestBody),
     });
 
     const zaloData = await zaloResponse.json();

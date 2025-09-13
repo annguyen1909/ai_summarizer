@@ -2,13 +2,37 @@ import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
 import { userProfiles } from '@/lib/storage';
 
+// Type definitions for payment callbacks
+interface MoMoCallbackData {
+  partnerCode: string;
+  orderId: string;
+  requestId: string;
+  amount: number;
+  orderInfo: string;
+  orderType: string;
+  transId: string;
+  resultCode: number;
+  message: string;
+  payType: string;
+  responseTime: number;
+  extraData: string;
+  signature: string;
+}
+
+interface ZaloPayCallbackData {
+  data: string;
+  mac: string;
+}
+
+type PaymentCallbackData = MoMoCallbackData | ZaloPayCallbackData | Record<string, unknown>;
+
 // Simplified payment callback handler for development
 export async function POST(request: NextRequest) {
   try {
     const body = await request.text();
     const contentType = request.headers.get('content-type') || '';
 
-    let paymentData: any = {};
+    let paymentData: PaymentCallbackData = {};
     let provider = '';
 
     // Handle MoMo callback (JSON format)
@@ -44,11 +68,11 @@ export async function POST(request: NextRequest) {
 
     // Verify and process MoMo payment
     if (provider === 'momo') {
-      return await processMoMoCallback(paymentData);
+      return await processMoMoCallback(paymentData as MoMoCallbackData);
     }
     // Verify and process ZaloPay payment
     else if (provider === 'zalopay') {
-      return await processZaloPayCallback(paymentData);
+      return await processZaloPayCallback(paymentData as ZaloPayCallbackData);
     }
     else {
       console.error('Unknown payment provider');
@@ -61,7 +85,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-async function processMoMoCallback(data: any) {
+async function processMoMoCallback(data: MoMoCallbackData) {
   try {
     const {
       partnerCode,
@@ -127,7 +151,7 @@ async function processMoMoCallback(data: any) {
   }
 }
 
-async function processZaloPayCallback(data: any) {
+async function processZaloPayCallback(data: ZaloPayCallbackData) {
   try {
     const { data: callbackData, mac } = data;
 
@@ -154,7 +178,7 @@ async function processZaloPayCallback(data: any) {
 
     // Parse callback data
     const parsedData = JSON.parse(callbackData);
-    const { app_trans_id, embed_data } = parsedData;
+    const { embed_data } = parsedData;
 
     if (embed_data) {
       const embedDataParsed = JSON.parse(embed_data);
@@ -191,9 +215,11 @@ export async function GET(request: NextRequest) {
 }
 
 // Helper function to update user subscription
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function updateUserSubscription(email: string, plan: string, expiryDate: Date): Promise<boolean> {
   try {
     // Find user by email in our in-memory storage
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     for (const [userId, profile] of userProfiles.entries()) {
       if (profile.email === email) {
         // Update user profile with new subscription

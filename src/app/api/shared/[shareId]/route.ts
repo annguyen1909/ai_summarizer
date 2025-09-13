@@ -5,10 +5,10 @@ const summaries = new Map();
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { shareId: string } }
+  { params }: { params: Promise<{ shareId: string }> }
 ) {
   try {
-    const { shareId } = params;
+    const { shareId } = await params;
 
     if (!shareId) {
       return NextResponse.json({ error: 'Share ID is required' }, { status: 400 });
@@ -16,6 +16,7 @@ export async function GET(
 
     // Find the shared summary
     let sharedSummary = null;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     for (const [id, summary] of summaries) {
       if (summary.share_id === shareId && summary.is_shared) {
         sharedSummary = summary;

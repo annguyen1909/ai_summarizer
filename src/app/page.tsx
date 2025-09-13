@@ -1,21 +1,18 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { SignInButton, SignUpButton, SignedIn, SignedOut, UserButton, useUser } from "@clerk/nextjs";
+import { SignInButton, SignUpButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import { BlogSidebar } from "@/components/sidebars/BlogSidebar";
 import { 
   FileText, 
   Languages, 
-  ListChecks, 
   Type, 
   Lightbulb,
-  Download,
   Share2,
   ArrowRight,
   CheckCircle,
@@ -25,8 +22,6 @@ import {
 } from "lucide-react";
 
 export default function Home() {
-  const { isSignedIn, isLoaded } = useUser();
-  const router = useRouter();
   const [demoText, setDemoText] = useState("");
   const [demoResult, setDemoResult] = useState("");
   const [demoLoading, setDemoLoading] = useState(false);
@@ -330,7 +325,7 @@ export default function Home() {
               </CardHeader>
               <CardContent className="text-center px-8 pb-8">
                 <p className="text-gray-600 text-lg leading-relaxed mb-6">
-                  <strong>"Tóm tắt tài liệu học nhanh chóng"</strong>
+                  <strong>&ldquo;Tóm tắt tài liệu học nhanh chóng&rdquo;</strong>
                 </p>
                 <p className="text-gray-500 text-sm">
                   Xử lý hàng trăm trang tài liệu trong vài phút. Từ PDF bài giảng đến nghiên cứu khoa học.
@@ -354,7 +349,7 @@ export default function Home() {
               </CardHeader>
               <CardContent className="text-center px-8 pb-8">
                 <p className="text-gray-600 text-lg leading-relaxed mb-6">
-                  <strong>"Rút gọn email, báo cáo"</strong>
+                  <strong>&ldquo;Rút gọn email, báo cáo&rdquo;</strong>
                 </p>
                 <p className="text-gray-500 text-sm">
                   Nắm bắt nhanh nội dung email dài, báo cáo phức tạp và tài liệu công việc.
@@ -378,7 +373,7 @@ export default function Home() {
               </CardHeader>
               <CardContent className="text-center px-8 pb-8">
                 <p className="text-gray-600 text-lg leading-relaxed mb-6">
-                  <strong>"Nắm bắt nhanh nội dung nóng hổi"</strong>
+                  <strong>&ldquo;Nắm bắt nhanh nội dung nóng hổi&rdquo;</strong>
                 </p>
                 <p className="text-gray-500 text-sm">
                   Cập nhật tin tức, bài báo dài chỉ trong vài giây. Luôn cập nhật mà không tốn thời gian.
@@ -513,7 +508,7 @@ export default function Home() {
                   </div>
                 </div>
                 <p className="text-gray-600 leading-relaxed">
-                  "Tóm tắt tài liệu 100 trang chỉ trong 2 phút! Giúp mình ôn thi hiệu quả hơn rất nhiều. Không thể thiếu được."
+                  &ldquo;Tóm tắt tài liệu 100 trang chỉ trong 2 phút! Giúp mình ôn thi hiệu quả hơn rất nhiều. Không thể thiếu được.&rdquo;
                 </p>
                 <div className="flex text-yellow-400 mt-4">
                   <span>⭐⭐⭐⭐⭐</span>
@@ -540,7 +535,7 @@ export default function Home() {
                   </div>
                 </div>
                 <p className="text-gray-600 leading-relaxed">
-                  "Đọc báo cáo thị trường từ 50 trang xuống còn 2 đoạn cực súc tích. Tiết kiệm được 2 giờ mỗi ngày!"
+                  &ldquo;Đọc báo cáo thị trường từ 50 trang xuống còn 2 đoạn cực súc tích. Tiết kiệm được 2 giờ mỗi ngày!&rdquo;
                 </p>
                 <div className="flex text-yellow-400 mt-4">
                   <span>⭐⭐⭐⭐⭐</span>
@@ -567,7 +562,7 @@ export default function Home() {
                   </div>
                 </div>
                 <p className="text-gray-600 leading-relaxed">
-                  "Theo dõi tin tức quốc tế từ nhiều nguồn. AI Tóm tắt giúp mình nắm bắt nhanh xu hướng và sự kiện hot."
+                  &ldquo;Theo dõi tin tức quốc tế từ nhiều nguồn. AI Tóm tắt giúp mình nắm bắt nhanh xu hướng và sự kiện hot.&rdquo;
                 </p>
                 <div className="flex text-yellow-400 mt-4">
                   <span>⭐⭐⭐⭐⭐</span>
@@ -678,7 +673,7 @@ export default function Home() {
                   <div className="text-center py-16">
                     <div className="text-8xl mb-6">🤖</div>
                     <p className="text-gray-500 text-xl leading-relaxed">
-                      Nhập văn bản bên trái và nhấn <br/><strong>"Tóm tắt ngay"</strong> để xem kết quả
+                      Nhập văn bản bên trái và nhấn <br/><strong>&ldquo;Tóm tắt ngay&rdquo;</strong> để xem kết quả
                     </p>
                   </div>
                 )}
