@@ -1,0 +1,28 @@
+Placeholder Images for AI Summarizer
+
+The following image files should be created and placed in this directory:
+
+LANDING PAGE:
+1. hero-placeholder.png (600x400) - Person using laptop/phone while reading news or studying
+2. usecase-1.png (300x200) - Student studying with books and laptop
+3. usecase-2.png (300x200) - Office worker at desk with documents
+4. usecase-3.png (300x200) - Person reading news on mobile device
+
+HOW IT WORKS SECTION:
+5. step1.png (256x192) - Copy/paste icon or clipboard illustration
+6. step2.png (256x192) - AI processing gears or brain icon
+7. step3.png (256x192) - Document summary or text condensation icon
+
+TESTIMONIALS:
+8. avatar1.png (48x48) - Friendly young male face (student)
+9. avatar2.png (48x48) - Professional female face (office worker)
+10. avatar3.png (48x48) - Casual user face (news reader)
+
+DASHBOARD:
+11. history-doc.png (40x40) - Document/paper icon
+12. action-text.png (200x128) - Clipboard or text input illustration
+13. action-link.png (200x128) - Link/URL icon or web browser
+14. action-upgrade.png (200x128) - VIP/Pro crown or premium badge icon
+
+These images will enhance the user experience and make the interface more visually appealing.
+For production, replace these with professional stock photos or custom illustrations.

@@ -1,0 +1,14 @@
+<svg width="200" height="128" xmlns="http://www.w3.org/2000/svg">
+  <rect width="200" height="128" fill="#dcfce7"/>
+  <rect x="40" y="30" width="120" height="68" fill="#ffffff" rx="8"/>
+  <rect x="50" y="40" width="100" height="8" fill="#22c55e" rx="4"/>
+  <circle cx="60" cy="44" r="2" fill="#ffffff"/>
+  <circle cx="68" cy="44" r="2" fill="#ffffff"/>
+  <circle cx="76" cy="44" r="2" fill="#ffffff"/>
+  <text x="50%" y="75%" dominant-baseline="middle" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#166534">
+    🔗 https://example.com
+  </text>
+  <text x="50%" y="85%" dominant-baseline="middle" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#166534">
+    Link Input
+  </text>
+</svg>
