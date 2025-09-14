@@ -159,7 +159,7 @@ export default function Dashboard() {
     if (activeTab === "summary" && result) {
       setResult("");
     }
-  }, [summaryMode, activeTab]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [summaryMode, activeTab]); // eslint-disable-line react-hooks/exhaustive-depss
 
   const setupGuestProfile = () => {
     const guestUsage = getGuestUsage();
