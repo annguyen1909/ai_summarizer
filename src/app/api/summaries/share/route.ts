@@ -5,7 +5,6 @@ import crypto from 'crypto';
 // Import the same storage from history API
 // In production, this should be a proper database
 const summaries = new Map();
-const userSummaries = new Map();
 
 export async function POST(request: NextRequest) {
   try {

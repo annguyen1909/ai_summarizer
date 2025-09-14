@@ -9,7 +9,7 @@ function generateReferralCode() {
   return Math.random().toString(36).substring(2, 10).toUpperCase();
 }
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const { userId } = await auth();
     

@@ -1,8 +1,8 @@
 import { auth } from '@clerk/nextjs/server';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { addDailyLoginReward } from '@/lib/usage';
 
-export async function POST(request: NextRequest) {
+export async function POST() {
   try {
     // Check authentication
     const { userId } = await auth();

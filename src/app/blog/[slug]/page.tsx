@@ -8,7 +8,6 @@ import remarkGfm from "remark-gfm";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { CalendarDays, Clock, ArrowLeft, Share2 } from "lucide-react";
-import { Footer } from "@/components/Footer";
 
 interface BlogPost {
   id: string;

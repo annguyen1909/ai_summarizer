@@ -80,13 +80,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    let userEmail: string;
     let isGuest = false;
 
     // Handle guest mode
     if (!userId || guestMode) {
       isGuest = true;
-      userEmail = 'guest_' + Date.now(); // Temporary guest identifier
       
       // For guest users, always require hCaptcha
       if (!hcaptchaToken) {
@@ -104,9 +102,6 @@ export async function POST(request: NextRequest) {
         );
       }
     } else {
-      // Use Clerk userId for authenticated users
-      userEmail = userId;
-      
       // Check usage limits using new system
       const usageInfo = await getUserUsageInfo(userId);
       if (!usageInfo) {

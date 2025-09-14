@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { CalendarDays, Clock, ArrowLeft } from "lucide-react";
+import { CalendarDays, Clock } from "lucide-react";
 import { Footer } from "@/components/Footer";
 
 interface BlogPost {

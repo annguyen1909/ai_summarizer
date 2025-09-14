@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Invalid JSON in request body" }, { status: 400 });
     }
 
-    const { email, firstName, lastName, imageUrl } = body;
+    const { email } = body;
 
     // Validate required email field
     if (!email) {

@@ -12,7 +12,6 @@ import {
   ArrowLeft, 
   Crown, 
   User, 
-  Mail, 
   Calendar,
   Settings,
   LogOut
