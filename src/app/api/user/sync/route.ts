@@ -58,16 +58,20 @@ export async function POST(request: NextRequest) {
 
       return NextResponse.json({ success: true, user: data });
     } else {
-      // Create new user with free daily usage
+      // Create new user with free daily usage + login bonus
+      const today = new Date().toISOString().split('T')[0];
+      const newUserDailyUsages = 5 + 5; // Base 5 + 5 login bonus for new users
+      
       const { data, error } = await supabase
         .from('users')
         .insert({
           clerk_id: userId,
           email,
           subscription: 'Free',
-          daily_usage_count: 5, // Give new users 5 free uses per day
+          daily_usage_count: newUserDailyUsages,
           monthly_usage_count: 0,
-          usage_reset_date: new Date().toISOString().split('T')[0], // Today's date
+          usage_reset_date: today,
+          last_login_date: today, // Track first login
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
         })
@@ -79,6 +83,7 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: "Failed to create user" }, { status: 500 });
       }
 
+      console.log(`New user created with welcome bonus: ${newUserDailyUsages} usages`);
       return NextResponse.json({ success: true, user: data });
     }
   } catch (error) {
