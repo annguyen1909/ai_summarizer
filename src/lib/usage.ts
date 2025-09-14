@@ -40,16 +40,27 @@ export async function getUserUsageInfo(clerkId: string): Promise<UsageInfo | nul
     // Check if daily reset is needed
     const today = new Date().toISOString().split('T')[0];
     const userResetDate = user.usage_reset_date;
+    const lastLoginDate = user.last_login_date;
 
     if (userResetDate !== today) {
       // Reset daily usage
       const dailyLimit = getDailyLimit(user.subscription);
+      let totalUsagesForToday = dailyLimit;
+
+      // Add daily login bonus if user logs in for first time today
+      const isFirstLoginToday = lastLoginDate !== today;
+      if (isFirstLoginToday) {
+        const dailyBonus = parseInt(process.env.DAILY_LOGIN_BONUS || '5');
+        totalUsagesForToday += dailyBonus; // Daily login reward
+        console.log(`Daily login reward given to user ${clerkId}: +${dailyBonus} usages`);
+      }
       
       const { error: updateError } = await supabase
         .from('users')
         .update({
-          daily_usage_count: dailyLimit,
+          daily_usage_count: totalUsagesForToday,
           usage_reset_date: today,
+          last_login_date: today, // Track last login
           updated_at: new Date().toISOString(),
         })
         .eq('clerk_id', clerkId);
@@ -60,13 +71,48 @@ export async function getUserUsageInfo(clerkId: string): Promise<UsageInfo | nul
       }
 
       return {
-        canUse: dailyLimit > 0,
-        remainingUses: dailyLimit,
+        canUse: totalUsagesForToday > 0,
+        remainingUses: totalUsagesForToday,
         usedToday: 0,
         dailyLimit: dailyLimit,
         subscription: user.subscription,
         resetDate: today,
       };
+    } else {
+      // Check if we need to give daily login bonus (same day but first login)
+      const isFirstLoginToday = lastLoginDate !== today;
+      if (isFirstLoginToday) {
+        const bonusUsages = parseInt(process.env.DAILY_LOGIN_BONUS || '5');
+        const newTotalUsages = user.daily_usage_count + bonusUsages;
+        
+        const { error: bonusError } = await supabase
+          .from('users')
+          .update({
+            daily_usage_count: newTotalUsages,
+            last_login_date: today,
+            updated_at: new Date().toISOString(),
+          })
+          .eq('clerk_id', clerkId);
+
+        if (bonusError) {
+          console.error('Error adding daily login bonus:', bonusError);
+        } else {
+          console.log(`Daily login reward given to user ${clerkId}: +${bonusUsages} usages`);
+        }
+
+        // Return updated info
+        const dailyLimit = getDailyLimit(user.subscription);
+        const usedToday = dailyLimit - newTotalUsages;
+        
+        return {
+          canUse: newTotalUsages > 0,
+          remainingUses: newTotalUsages,
+          usedToday: Math.max(0, usedToday),
+          dailyLimit: dailyLimit,
+          subscription: user.subscription,
+          resetDate: userResetDate,
+        };
+      }
     }
 
     // Return current usage info
@@ -145,6 +191,50 @@ function getDailyLimit(subscription: string): number {
       return parseInt(process.env.PRO_DAILY_LIMIT || '100');
     default:
       return 5;
+  }
+}
+
+// Function to add daily login reward
+export async function addDailyLoginReward(clerkId: string): Promise<{ success: boolean; bonusUsages: number }> {
+  try {
+    const today = new Date().toISOString().split('T')[0];
+    
+    const { data: user, error } = await supabase
+      .from('users')
+      .select('last_login_date, daily_usage_count')
+      .eq('clerk_id', clerkId)
+      .single();
+
+    if (error || !user) {
+      return { success: false, bonusUsages: 0 };
+    }
+
+    // Check if user already logged in today
+    if (user.last_login_date === today) {
+      return { success: false, bonusUsages: 0 }; // Already received today's reward
+    }
+
+    // Add 5 bonus usages
+    const bonusUsages = parseInt(process.env.DAILY_LOGIN_BONUS || '5');
+    const { error: updateError } = await supabase
+      .from('users')
+      .update({
+        daily_usage_count: user.daily_usage_count + bonusUsages,
+        last_login_date: today,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('clerk_id', clerkId);
+
+    if (updateError) {
+      console.error('Error adding daily login reward:', updateError);
+      return { success: false, bonusUsages: 0 };
+    }
+
+    console.log(`Daily login reward added for user ${clerkId}: +${bonusUsages} usages`);
+    return { success: true, bonusUsages };
+  } catch (error) {
+    console.error('Error in addDailyLoginReward:', error);
+    return { success: false, bonusUsages: 0 };
   }
 }
 
