@@ -81,6 +81,7 @@ interface UsageInfo {
   canUse: boolean;
   usedToday: number;
   dailyLimit: number;
+  totalAvailableToday: number;
   remainingUses: number;
   isGuest: boolean;
   subscription: string;
@@ -174,6 +175,7 @@ export default function Dashboard() {
       remainingUses: remainingQuota,
       usedToday: guestUsage.count,
       dailyLimit: GUEST_DAILY_LIMIT,
+      totalAvailableToday: GUEST_DAILY_LIMIT,
       subscription: 'Free',
       isGuest: true
     });
@@ -476,7 +478,7 @@ export default function Dashboard() {
                 <div className="text-sm bg-blue-50 px-4 py-2 rounded-xl">
                   <span className="text-gray-600">Còn lại: </span>
                   <span className="font-bold text-blue-600">
-                    {usageInfo.remainingUses}/{usageInfo.dailyLimit || 5}
+                    {usageInfo.remainingUses}/{usageInfo.totalAvailableToday}
                   </span>
                 </div>
               )}
@@ -516,7 +518,7 @@ export default function Dashboard() {
                   {user ? (
                     <>Xin chào, <span className="font-medium text-gray-700">{user.firstName || user.emailAddresses[0]?.emailAddress}</span></>
                   ) : (
-                    <>Dùng thử miễn phí - <span className="font-bold text-blue-600">{usageInfo?.usedToday || 0}/{usageInfo?.dailyLimit || GUEST_DAILY_LIMIT}</span> lượt hôm nay</>
+                    <>Dùng thử miễn phí - <span className="font-bold text-blue-600">{usageInfo?.usedToday || 0}/{usageInfo?.totalAvailableToday || GUEST_DAILY_LIMIT}</span> lượt hôm nay</>
                   )}
                 </div>
                 
@@ -524,7 +526,7 @@ export default function Dashboard() {
                   <div className="text-sm bg-blue-50 px-4 py-2 rounded-xl mx-2">
                     <span className="text-gray-600">Còn lại: </span>
                     <span className="font-bold text-blue-600">
-                      {usageInfo.remainingUses}/{usageInfo.dailyLimit || 5}
+                      {usageInfo.remainingUses}/{usageInfo.totalAvailableToday}
                     </span>
                   </div>
                 )}
@@ -626,14 +628,14 @@ export default function Dashboard() {
                       </span>
                     </div>
                     <span className="text-xs sm:text-sm text-gray-600">
-                      {(usageInfo.dailyLimit || 5) - usageInfo.remainingUses}/{usageInfo.dailyLimit || 5}
+                      {usageInfo.usedToday}/{usageInfo.totalAvailableToday}
                     </span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-1.5 sm:h-2">
                     <div 
                       className={`h-1.5 sm:h-2 rounded-full ${!user ? 'bg-orange-500' : 'bg-blue-600'}`}
                       style={{ 
-                        width: `${(((usageInfo.dailyLimit || 5) - usageInfo.remainingUses) / (usageInfo.dailyLimit || 5)) * 100}%` 
+                        width: `${(usageInfo.usedToday / usageInfo.totalAvailableToday) * 100}%` 
                       }}
                     ></div>
                   </div>
@@ -1120,7 +1122,7 @@ export default function Dashboard() {
                   <div className="grid grid-cols-2 gap-4">
                     <div className="bg-white p-4 rounded-xl text-center shadow-sm">
                       <div className="text-2xl font-bold text-green-600 mb-1">
-                        {(usageInfo.dailyLimit || 5) - usageInfo.remainingUses}
+                        {usageInfo.usedToday}
                       </div>
                       <div className="text-xs text-gray-500">Đã sử dụng hôm nay</div>
                     </div>

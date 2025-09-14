@@ -19,6 +19,7 @@ interface UsageInfo {
   remainingUses: number;
   usedToday: number;
   dailyLimit: number;
+  totalAvailableToday: number; // Base limit + any bonuses
   subscription: string;
   resetDate: string;
 }
@@ -75,6 +76,7 @@ export async function getUserUsageInfo(clerkId: string): Promise<UsageInfo | nul
         remainingUses: totalUsagesForToday,
         usedToday: 0,
         dailyLimit: dailyLimit,
+        totalAvailableToday: totalUsagesForToday,
         subscription: user.subscription,
         resetDate: today,
       };
@@ -102,13 +104,14 @@ export async function getUserUsageInfo(clerkId: string): Promise<UsageInfo | nul
 
         // Return updated info
         const dailyLimit = getDailyLimit(user.subscription);
-        const usedToday = dailyLimit - newTotalUsages;
+        const usedToday = Math.max(0, (dailyLimit + bonusUsages) - newTotalUsages);
         
         return {
           canUse: newTotalUsages > 0,
           remainingUses: newTotalUsages,
-          usedToday: Math.max(0, usedToday),
+          usedToday: usedToday,
           dailyLimit: dailyLimit,
+          totalAvailableToday: dailyLimit + bonusUsages,
           subscription: user.subscription,
           resetDate: userResetDate,
         };
@@ -117,13 +120,16 @@ export async function getUserUsageInfo(clerkId: string): Promise<UsageInfo | nul
 
     // Return current usage info
     const dailyLimit = getDailyLimit(user.subscription);
-    const usedToday = dailyLimit - user.daily_usage_count;
+    const usedToday = Math.max(0, dailyLimit - user.daily_usage_count);
+    // Calculate total available today (could be more than dailyLimit if bonuses were added)
+    const totalAvailable = Math.max(dailyLimit, user.daily_usage_count + usedToday);
     
     return {
       canUse: user.daily_usage_count > 0,
       remainingUses: user.daily_usage_count,
       usedToday: usedToday,
       dailyLimit: dailyLimit,
+      totalAvailableToday: totalAvailable,
       subscription: user.subscription,
       resetDate: userResetDate,
     };
