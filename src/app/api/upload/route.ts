@@ -28,7 +28,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'File size too large. Maximum size is 10MB.' }, { status: 400 });
     }
 
-    const buffer = await file.arrayBuffer();
     let extractedText = '';
 
     try {

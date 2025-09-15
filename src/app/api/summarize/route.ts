@@ -67,11 +67,14 @@ async function fetchContentFromUrl(url: string): Promise<string> {
 }
 
 export async function POST(request: NextRequest) {
+  console.log('=== Summarize API called ===');
   try {
     // Get authentication from Clerk (optional for guest mode)
     const { userId } = await auth();
+    console.log('User ID:', userId);
     
     const { text, url, hcaptchaToken, guestMode, summaryMode } = await request.json();
+    console.log('Request data:', { hasText: !!text, hasUrl: !!url, summaryMode, hasHcaptcha: !!hcaptchaToken, guestMode });
 
     if (!text && !url) {
       return NextResponse.json(
@@ -242,8 +245,29 @@ Quy tắc:
       }
       
       remainingUses = usageResult.remainingUses;
+
+      // Save to history for authenticated users
+      try {
+        // Import the history storage functions
+        const { saveToHistory } = await import('@/lib/history');
+        await saveToHistory(userId!, {
+          type: 'summary',
+          originalText: contentToSummarize.substring(0, 1000), // Limit stored text length
+          result: summary.trim(),
+          metadata: {
+            summaryMode: summaryMode || 'short',
+            source: url ? 'url' : 'text',
+            sourceUrl: url || null
+          }
+        });
+        console.log('History saved successfully');
+      } catch (historyError) {
+        console.error('Failed to save history:', historyError);
+        // Don't fail the main request if history saving fails
+      }
     }
 
+    console.log('=== Returning summary result ===', { hasSummary: !!summary, fromCache, remainingUses });
     return NextResponse.json({
       summary: summary.trim(),
       fromCache,

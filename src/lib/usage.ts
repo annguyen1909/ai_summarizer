@@ -19,6 +19,7 @@ interface UsageInfo {
   remainingUses: number;
   usedToday: number;
   dailyLimit: number;
+  totalAvailableToday: number; // Added this field
   subscription: string;
   resetDate: string;
 }
@@ -75,6 +76,7 @@ export async function getUserUsageInfo(clerkId: string): Promise<UsageInfo | nul
         remainingUses: totalUsagesForToday,
         usedToday: 0,
         dailyLimit: dailyLimit,
+        totalAvailableToday: totalUsagesForToday,
         subscription: user.subscription,
         resetDate: today,
       };
@@ -109,6 +111,7 @@ export async function getUserUsageInfo(clerkId: string): Promise<UsageInfo | nul
           remainingUses: newTotalUsages,
           usedToday: Math.max(0, usedToday),
           dailyLimit: dailyLimit,
+          totalAvailableToday: newTotalUsages,
           subscription: user.subscription,
           resetDate: userResetDate,
         };
@@ -124,6 +127,7 @@ export async function getUserUsageInfo(clerkId: string): Promise<UsageInfo | nul
       remainingUses: user.daily_usage_count,
       usedToday: usedToday,
       dailyLimit: dailyLimit,
+      totalAvailableToday: user.daily_usage_count,
       subscription: user.subscription,
       resetDate: userResetDate,
     };

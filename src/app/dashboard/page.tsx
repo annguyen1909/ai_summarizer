@@ -82,6 +82,7 @@ interface UsageInfo {
   usedToday: number;
   dailyLimit: number;
   remainingUses: number;
+  totalAvailableToday: number;
   isGuest: boolean;
   subscription: string;
 }
@@ -159,7 +160,7 @@ export default function Dashboard() {
     if (activeTab === "summary" && result) {
       setResult("");
     }
-  }, [summaryMode, activeTab, result]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [summaryMode, activeTab, result]);
 
   const setupGuestProfile = () => {
     const guestUsage = getGuestUsage();
@@ -174,6 +175,7 @@ export default function Dashboard() {
       remainingUses: remainingQuota,
       usedToday: guestUsage.count,
       dailyLimit: GUEST_DAILY_LIMIT,
+      totalAvailableToday: GUEST_DAILY_LIMIT,
       subscription: 'Free',
       isGuest: true
     });
@@ -242,8 +244,13 @@ export default function Dashboard() {
           });
         }
         
+        console.log('Response status:', response.status, response.ok);
         const data = await response.json();
-        if (data.summary) {
+        console.log('=== API Response ===', data);
+        console.log('Summary field check:', { hasSummary: !!data.summary, summaryLength: data.summary?.length, summaryValue: data.summary });
+        
+        if (data && typeof data === 'object' && data.summary && typeof data.summary === 'string' && data.summary.trim().length > 0) {
+          console.log('✅ Valid summary found, setting result:', data.summary);
           setResult(data.summary);
           updateQuotaAfterUsage();
           if (user) {
@@ -253,6 +260,9 @@ export default function Dashboard() {
           console.error('API Error:', data.error);
           // Show error to user
           setResult(`Lỗi: ${data.error}`);
+        } else {
+          console.log('No summary or error in response:', data);
+          setResult('Không nhận được kết quả từ API.');
         }
       } catch (error) {
         console.error('Summary error:', error);
@@ -476,7 +486,7 @@ export default function Dashboard() {
                 <div className="text-sm bg-blue-50 px-4 py-2 rounded-xl">
                   <span className="text-gray-600">Còn lại: </span>
                   <span className="font-bold text-blue-600">
-                    {usageInfo.remainingUses}/{usageInfo.dailyLimit || 5}
+                    {usageInfo.remainingUses}/{usageInfo.totalAvailableToday}
                   </span>
                 </div>
               )}
@@ -524,7 +534,7 @@ export default function Dashboard() {
                   <div className="text-sm bg-blue-50 px-4 py-2 rounded-xl mx-2">
                     <span className="text-gray-600">Còn lại: </span>
                     <span className="font-bold text-blue-600">
-                      {usageInfo.remainingUses}/{usageInfo.dailyLimit || 5}
+                      {usageInfo.remainingUses}/{usageInfo.totalAvailableToday}
                     </span>
                   </div>
                 )}
@@ -626,14 +636,14 @@ export default function Dashboard() {
                       </span>
                     </div>
                     <span className="text-xs sm:text-sm text-gray-600">
-                      {(usageInfo.dailyLimit || 5) - usageInfo.remainingUses}/{usageInfo.dailyLimit || 5}
+                      {usageInfo.totalAvailableToday - usageInfo.remainingUses}/{usageInfo.totalAvailableToday}
                     </span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-1.5 sm:h-2">
                     <div 
                       className={`h-1.5 sm:h-2 rounded-full ${!user ? 'bg-orange-500' : 'bg-blue-600'}`}
                       style={{ 
-                        width: `${(((usageInfo.dailyLimit || 5) - usageInfo.remainingUses) / (usageInfo.dailyLimit || 5)) * 100}%` 
+                        width: `${((usageInfo.totalAvailableToday - usageInfo.remainingUses) / usageInfo.totalAvailableToday) * 100}%` 
                       }}
                     ></div>
                   </div>
@@ -678,6 +688,7 @@ export default function Dashboard() {
                           width={200}
                           height={128}
                           className="w-full h-full object-cover"
+                          unoptimized
                         />
                       </div>
                       <div className="flex items-center mb-4">
@@ -702,6 +713,7 @@ export default function Dashboard() {
                           width={200}
                           height={128}
                           className="w-full h-full object-cover"
+                          unoptimized
                         />
                       </div>
                       <div className="flex items-center mb-4">
