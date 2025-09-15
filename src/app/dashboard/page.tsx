@@ -160,7 +160,7 @@ export default function Dashboard() {
     if (activeTab === "summary" && result) {
       setResult("");
     }
-  }, [summaryMode, activeTab, result]);
+  }, [summaryMode, activeTab]); // Removed 'result' from dependency array to prevent infinite loop
 
   const setupGuestProfile = () => {
     const guestUsage = getGuestUsage();
